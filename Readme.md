@@ -1,0 +1,1 @@
+kubeprary설치 - External LB설정
