@@ -197,5 +197,67 @@ vrrp_instance VI_1 {
 
 <br>
 
+## haproxy 설정
+
+### 각 노드 변경
+> haproxy 설정 후 sudo systemctl restart haproxy, sudo systemctl enable haproxy 실행
+
+```sh
+vim /etc/haproxy/haproxy.cfg
+global
+    log         127.0.0.1 local2
+
+    chroot      /var/lib/haproxy
+    pidfile     /var/run/haproxy.pid
+    maxconn     4000
+    user        haproxy
+    group       haproxy
+    daemon
+
+    # turn on stats unix socket
+    stats socket /var/lib/haproxy/stats
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    http
+    log                     global
+    option                  httplog
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    timeout http-request    10s
+    timeout queue           1m
+    timeout connect         10s
+    timeout client          1m
+    timeout server          1m
+    timeout http-keep-alive 10s
+    timeout check           10s
+    maxconn                 3000
+#---------------------------------------------------------------------
+# apiserver frontend which proxys to the masters
+#---------------------------------------------------------------------
+frontend apiserver
+    bind *:6443
+    mode tcp
+    option tcplog
+    default_backend apiserver
+#---------------------------------------------------------------------
+# round robin balancing for apiserver
+#---------------------------------------------------------------------
+backend apiserver
+    option httpchk GET /healthz
+    http-check expect status 200
+    mode tcp
+    option ssl-hello-chk
+    balance     roundrobin
+        server prod-master1 192.168.25.41:6443 check
+        server prod-master2 192.168.25.42:6443 check
+        server prod-master3 192.168.25.43:6443 check
+```
+
 # 참고자료
 * https://computingforgeeks.com/deploy-kubernetes-cluster-centos-kubespray/
