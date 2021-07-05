@@ -18,9 +18,9 @@
 # 개요
 kubeprary설치 - External LB설정
 
-> 블로그 글: https://malwareanalysis.tistory.com/132
-> 유투브 영상: https://youtu.be/12vNy4IvF14
-> 발표 pdf: https://www.slideshare.net/sungwookchoi5/onpremise-kubespray
+> 블로그 글: https://malwareanalysis.tistory.com/132 <br>
+> 유투브 영상: https://youtu.be/12vNy4IvF14 <br>
+> 발표 pdf: https://www.slideshare.net/sungwookchoi5/onpremise-kubespray <br>
 
 <br>
 
